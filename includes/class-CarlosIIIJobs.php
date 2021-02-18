@@ -136,6 +136,11 @@ class CarlosIIIJobs {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-CarlosIIIJobs-job-type.php';
 
+		/**
+         * La clase responsable de la definición del widget de subscripción.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-CarlosIIIJobsWidgetSuscribe.php';
+		
 		$this->loader = new CarlosIIIJobs_Loader();
 	}
 
