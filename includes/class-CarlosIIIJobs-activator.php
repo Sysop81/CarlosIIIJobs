@@ -30,6 +30,26 @@ class CarlosIIIJobs_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
+		self::CarlosIIIJobInstallSuscriptores();
+	}
+
+	private static function CarlosIIIJobInstallSuscriptores() {
+
+	    global $wpdb;
+
+	    $table_name = $wpdb->prefix . "c3jSuscriptores"; //Objeto global y prefijo y la tabla c3jSuscriptores
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+	    $sql = "CREATE TABLE $table_name (
+	      id mediumint(9) NOT NULL AUTO_INCREMENT,
+	      time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+	      email varchar(100) DEFAULT '' NOT NULL,
+	      PRIMARY KEY  (id)
+	    ) $charset_collate;";
+
+	    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' ); //Require para utilizar la la funcion dbDelta
+	    dbDelta( $sql );                                           
 
 	}
 
