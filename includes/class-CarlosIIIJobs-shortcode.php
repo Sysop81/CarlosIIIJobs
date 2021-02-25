@@ -7,7 +7,19 @@ class CarlosIIIJobs_shortcode
     {
         function CarlosIIIJobs_shortcode($atts = [], $content = null)
         {
-            if(!isset($atts['n_ofertas'])) $atts['n_ofertas'] = 5;
+            //Declaramos $wpdb como global para interactuar con la BBDD mediante alguna de sus funciones
+            global $wpdb;
+            
+            //Preparamos la consulta, para obtener el numero de ofertas configuradas para el shorcode
+            $query = "select option_value from wp_options where option_name = 'CarlosIIIJob_options_nOfertas'";
+            
+            //Ejecutamos la funcion get_var introduciendo como parametro la consulta preparada en elpaso anterior
+            //y cargamos la variable $n_ofertas
+            $n_ofertas = $wpdb->get_var($query);
+            
+            //Establecemos la paginacion mediante la variable $n_ofertas. En el caso de que el shortcode no reciba
+            //parametros se ejectura el valor establecido en la varible $n_ofertas, para mostrar el nº ofertas del shortcode
+            if(!isset($atts['n_ofertas'])) $atts['n_ofertas'] = $n_ofertas;
 
             $query = new WP_Query( array( 'post_type' => 'job' , 'posts_per_page' => $atts['n_ofertas']) );
             ob_start();

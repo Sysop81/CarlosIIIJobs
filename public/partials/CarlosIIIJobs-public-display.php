@@ -32,6 +32,10 @@
         <p>
             <label for="solo-subscribe-email"><?php _e('E-Mail:', 'subscribe-to-comments'); ?>
                 <input type="email" name="email" id="solo-subscribe-email" size="22" value="" /></label>
+            <!-- Titulacion de los subscriptores -->
+            <label for="solo-subscribe-titulo"><?php _e('Titulo:', 'subscribe-to-comments'); ?><br>
+                <input type="titulo" name="titulo" id="solo-subscribe-titulo" size="22" maxlength="3" placeholder="Introduzca su titulación" value="" /></label>    
+                
             <input type="submit" name="submit" value="<?php _e('Subscribe', 'subscribe-to-comments'); ?>" />
         </p>
     </form>

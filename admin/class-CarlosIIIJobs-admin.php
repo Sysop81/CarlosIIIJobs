@@ -100,17 +100,32 @@ class CarlosIIIJobs_Admin {
 
 	}
 
+	//Funcion encargada de subscribir a un subscriptor
 	public function CarlosIIIJob_suscribe() {
 		$response = array(
 	        'error' => false,
-        );
+		);		
+				//Obtenemos los valores de $_POST y cargamos las variables
 				$emailSuscriptor = htmlspecialchars($_POST["email"]);
+				$tituloSuscriptor = htmlspecialchars($_POST['titulo']);
+
+			if ($this->comprobarDominio($emailSuscriptor)){	
+
 				if(!$this->getSuscriptor($emailSuscriptor)) {
-					$this->addSuscriptor($emailSuscriptor);
+					$this->addSuscriptor($emailSuscriptor, $tituloSuscriptor);
 					$response['message'] = __("Solicitud registrada correctamente");
 		        } else {
 		           $response['message'] = __("Usted ya solicitó subscribirse");
 				}
+
+			}else{
+
+				global $wpdb; 
+		        $query = "select option_value from wp_options where option_name = 'CarlosIIIJob_options_dominio'";
+		        $dominioPermitido = $wpdb->get_var($query);
+
+				$response['message'] = __("Debe introducir un dominio de " . $dominioPermitido);
+			}	
 				exit(json_encode($response));
 		        
 	}
@@ -131,7 +146,8 @@ class CarlosIIIJobs_Admin {
  
 	 }
 
-	 public function addSuscriptor($emailSuscriptor) {
+	 //Añadimos a la funcion que se encarga de guardar en la BBDD, la variable cargada con el POST de la titulacion
+	 public function addSuscriptor($emailSuscriptor, $tituloSuscriptor) {
 
 		global $wpdb;
  
@@ -140,11 +156,38 @@ class CarlosIIIJobs_Admin {
 				$table_name,
 				array(
 					'email' => $emailSuscriptor,
+					'titulo' => $tituloSuscriptor,
 					'time' => current_time('mysql', 2),
 				),
 				array('%s')
 			);
  
+	 }
+
+	 //Funcion encargada de comprobar el dominio
+	 public function comprobarDominio($emailSuscriptor){
+		 //Declaramos $wpdb como global para interactuar con la BBDD mediante alguna de sus funciones
+		 global $wpdb; 
+
+		 //Praparamos la consulta
+		 $query = "select option_value from wp_options where option_name = 'CarlosIIIJob_options_dominio'";
+
+		 //Cargamos la variable $dominio con el metodo obteneido mediante la funcion get_var() de la variable global $wpdb
+		 $dominioPermitido = $wpdb->get_var($query);
+
+		 //Obtenemos el dominio introducido por el usuario mediante la funcion strstr()
+		 $dominioSubscriptor = strstr($emailSuscriptor,'@');
+
+		 //Concatenamos @ al dominioPermitido
+		 $dominioPermitido = '@' . $dominioPermitido;
+		 
+		 //Comparamos el dominio establecido en la configuracion con el dominio introducido por el posible subscriptor
+		 if ($dominioPermitido == $dominioSubscriptor){
+			 return true;
+		 }else{
+			 return false;
+		 }
+
 	 }
 
 }

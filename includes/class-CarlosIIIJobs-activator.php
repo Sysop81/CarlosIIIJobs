@@ -40,11 +40,13 @@ class CarlosIIIJobs_Activator {
 	    $table_name = $wpdb->prefix . "c3jSuscriptores"; //Objeto global y prefijo y la tabla c3jSuscriptores
 
         $charset_collate = $wpdb->get_charset_collate();
-
+		
+		//Añadimos a la c3jSuscriptores una nueva columna para almacenar el titulo. Por defecto, si no se envia nada establezco DAW
 	    $sql = "CREATE TABLE $table_name (
 	      id mediumint(9) NOT NULL AUTO_INCREMENT,
 	      time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 	      email varchar(100) DEFAULT '' NOT NULL,
+		  titulo varchar(3) DEFAULT 'DAW',  
 	      PRIMARY KEY  (id)
 	    ) $charset_collate;";
 

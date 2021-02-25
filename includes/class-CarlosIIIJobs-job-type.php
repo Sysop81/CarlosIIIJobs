@@ -89,23 +89,41 @@ if(!class_exists('CarlosIIIJobs_job_type'))
          */
         public function send_mail($post_id)
         {
+
+            global $wpdb; 
+		    
+		    
+
             if($emails = get_option('CarlosIIIJob_suscriptores')) {
                 $post = get_post($post_id);
                 $author = $post->post_author; /* Post author ID. */
 //                $name = get_the_author_meta( 'display_name', $author );
                 $email = get_the_author_meta( 'user_email', $author );
                 $title = $post->post_title;
-                $permalink = get_permalink( $post_id );
-                $edit = get_edit_post_link( $post_id, '' );
-                foreach ($emails as $email) {
-                    $to[] = $email;
-                }
-                $subject = sprintf( 'Published: %s', $title );
-                $message = sprintf ('Congratulations! Your article “%s” has been published.' . "\n\n", $title );
-                $message .= sprintf( 'View: %s', $permalink );
-                $headers[] = '';
 
-                wp_mail( $to, $subject, $message, $headers );
+                //Preparo la query
+                $query = "select titulo from c3jSuscriptores where titulo = " . $title;
+                
+                //Recupero en una variable la titulacion
+                $titulacionRecuperada = $wpdb->get_var($query);
+
+                //Comparamos la coincidencia entre titulaciones para enviar los emails
+                //Falta comprobar su funcionalidad
+                if($title == $titulacionRecuperada){
+                    $permalink = get_permalink( $post_id );
+                    $edit = get_edit_post_link( $post_id, '' );
+                    foreach ($emails as $email) {
+                        $to[] = $email;
+                    }
+                    $subject = sprintf( 'Published: %s', $title );
+                    $message = sprintf ('Congratulations! Your article “%s” has been published.' . "\n\n", $title );
+                    $message .= sprintf( 'View: %s', $permalink );
+                    $headers[] = '';
+
+                    wp_mail( $to, $subject, $message, $headers );
+                }
+
+                
 
             }
         } 
